@@ -1,1 +1,230 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>RedSoul</title>
+<style>
+:root{--bg:#faf8f7;--card:#fff;--ink:#1f1416;--mut:#6b555a;--red:#b0102b;--tint:#f8e1e5;--line:#eadcde;--ok:#1f7a45;--warn:#a05a00;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#181214;--card:#221a1c;--ink:#f5eceb;--mut:#b9a3a7;--red:#e0405a;--tint:#3b1d24;--line:#3a2b2e;--ok:#5fcf8d;--warn:#f0b050}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.w{max-width:1000px;margin:0 auto;padding:0 20px}
+h1,h2,.logo{font-family:Georgia,"Times New Roman",serif;font-weight:400}
+header{display:flex;flex-wrap:wrap;gap:8px 20px;justify-content:space-between;align-items:center;padding:20px 0;border-bottom:1px solid var(--line)}
+.logo{font-size:26px;color:var(--red);text-decoration:none}
+nav{display:flex;flex-wrap:wrap;gap:4px 20px}
+nav a{color:var(--mut);text-decoration:none;font-size:15px}nav a.on{color:var(--red);font-weight:700}
+nav a.urg{color:var(--red)}
+h1{font-size:clamp(34px,6vw,56px);line-height:1.1;margin:44px 0 8px}
+.sub{color:var(--mut);margin:0 0 28px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px;margin-bottom:16px}
+label{display:block;font-weight:700;font-size:14px;margin:0 0 6px}
+input,select,textarea{width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);font:inherit}
+:focus-visible{outline:3px solid var(--red);outline-offset:2px}
+.row{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end}.row>div{flex:1 1 140px}
+button,.btn{background:var(--red);color:#fff;border:0;border-radius:10px;padding:12px 18px;font:inherit;font-weight:700;cursor:pointer}
+button.alt{background:var(--card);color:var(--ink);border:1px solid var(--line)}
+button:disabled{opacity:.55;cursor:not-allowed}
+.d{display:flex;align-items:center;gap:14px;padding:14px 0;border-top:1px solid var(--line)}
+.av{width:52px;height:52px;flex:none;border-radius:50%;background:var(--tint);color:var(--red);font-weight:700;display:grid;place-items:center}
+.d .i{flex:1;min-width:0}.d b{display:block}.m{color:var(--mut);font-size:14px}
+.tag{display:inline-block;font-size:12px;font-weight:700;padding:2px 8px;border-radius:99px;background:var(--tint);color:var(--red);margin-left:6px}
+.ok{color:var(--ok);font-weight:700}.wn{color:var(--warn);font-weight:700}
+.chk{display:flex;gap:10px;align-items:center;font-weight:400;margin:14px 0}.chk input{width:20px;height:20px;accent-color:var(--red)}
+.hero{display:grid;grid-template-columns:1.1fr 1fr;gap:32px;align-items:center}
+@media(max-width:760px){.hero{grid-template-columns:1fr}.d{flex-wrap:wrap}}
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:24px;margin:48px 0}
+.steps div{border-left:3px solid var(--red);padding-left:16px}.steps h2{font-size:22px;margin:0 0 6px}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;place-items:center;padding:20px;z-index:9}
+.modal.on{display:grid}.modal .card{max-width:420px;width:100%;margin:0}
+.ph{font-size:20px;font-weight:700;color:var(--red)}
+.pts{background:var(--red);color:#fff;border-radius:18px;padding:24px;min-width:220px}.pts .n{font-family:Georgia,serif;font-size:64px;line-height:1}
+.rw{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.two{display:grid;grid-template-columns:260px 1fr;gap:16px;align-items:start}@media(max-width:700px){.two{grid-template-columns:1fr}}
+footer{border-top:1px solid var(--line);margin-top:56px;padding:22px 0;color:var(--mut);font-size:14px}
+.code{font-family:ui-monospace,monospace;background:var(--tint);color:var(--red);padding:2px 8px;border-radius:6px}
+</style></head><body>
+<div class="w">
+<header><a class="logo" href="#home">&#128997;&#xFE0E; RedSoul</a>
+<nav id="nav"></nav></header>
+<main id="app"></main>
+<footer>RedSoul | Hackathon prototype | Donor data shown is sample data only<br>Emergency: call 108 (ambulance) or 104 (health helpline)</footer>
+</div>
 
+<div class="modal" id="vm"><div class="card" role="dialog" aria-modal="true" aria-labelledby="vt">
+<h2 id="vt" style="margin:0 0 6px">Verify to contact <span id="vn"></span></h2>
+<p class="m" style="margin:0 0 14px">Only verified requesters see donor contact details. Demo: use any hospital ID and OTP <span class="code">1234</span>.</p>
+<div id="v1"><label for="hid">Hospital or requester ID</label><input id="hid" placeholder="e.g. APL-20417">
+<label for="ph" style="margin-top:12px">Mobile number</label><input id="ph" inputmode="tel" placeholder="10-digit number">
+<div class="row" style="margin-top:16px"><button id="sendotp">Send OTP</button><button class="alt" data-close>Cancel</button></div></div>
+<div id="v2" hidden><label for="otp">Enter 4-digit OTP</label><input id="otp" inputmode="numeric" maxlength="4">
+<p class="m" id="verr" role="alert" style="color:var(--red);margin:8px 0 0"></p>
+<div class="row" style="margin-top:16px"><button id="chkotp">Verify</button><button class="alt" data-close>Cancel</button></div></div>
+<div id="v3" hidden><p class="ok" style="margin:0 0 6px">Verified. Consent was requested from the donor.</p><p class="ph" id="vph"></p>
+<p class="m">Phone numbers are shared only with verified requesters, and the donor can report misuse.</p>
+<button class="alt" data-close>Close</button></div></div></div>
+
+<script>
+const $=s=>document.querySelector(s), DAY=864e5, GAP=90;
+const COMP={"O-":["O-"],"O+":["O+","O-"],"A-":["A-","O-"],"A+":["A+","A-","O+","O-"],"B-":["B-","O-"],"B+":["B+","B-","O+","O-"],"AB-":["AB-","A-","B-","O-"],"AB+":["AB+","AB-","A+","A-","B+","B-","O+","O-"]};
+const G=Object.keys(COMP);
+const ago=d=>new Date(Date.now()-d*DAY);
+let donors=[
+ {n:"Asha",g:"O+",c:"Chennai",last:ago(150),ph:"98400 11122",avail:true},
+ {n:"Karthik",g:"O+",c:"Chennai",last:ago(155),ph:"98400 33344",avail:true},
+ {n:"Divya",g:"O+",c:"Chennai",last:ago(160),ph:"98400 55566",avail:true},
+ {n:"Ravi",g:"O-",c:"Chennai",last:ago(200),ph:"98400 77788",avail:true},
+ {n:"Meena",g:"A+",c:"Chennai",last:ago(40),ph:"98400 99900",avail:true},
+ {n:"Suresh",g:"A-",c:"Chennai",last:ago(120),ph:"98400 24680",avail:true},
+ {n:"Nisha",g:"B+",c:"Coimbatore",last:ago(100),ph:"98400 13579",avail:true}];
+let reqs=[{g:"O+",h:"Apollo Hospital",c:"Chennai",u:2,t:"Today, 4 pm",helped:0}];
+let points=200, dons=2, verified=false, contact=null, ta=false;
+const tr=(e,t)=>ta?t:e;
+const NAV=[["home","Home","முகப்பு"],["find","Find blood","இரத்தம் தேடு"],["urgent","Urgent","அவசரம்"],["compat","Who can give","யார் கொடுக்கலாம்"],["donor","Become a donor","கொடையாளராகுங்கள்"],["rewards","Rewards","பரிசுகள்"]];
+const eligOn=d=>new Date(+d.last+GAP*DAY);
+const eligible=d=>eligOn(d)<=new Date();
+const fmt=d=>d.toLocaleDateString("en-IN",{day:"numeric",month:"short",year:"numeric"});
+const months=d=>{const m=Math.floor((Date.now()-d)/DAY/30);return m<1?"less than a month ago":m+" month"+(m>1?"s":"")+" ago"};
+const opts=(sel)=>G.map(g=>`<option${g===sel?" selected":""}>${g}</option>`).join("");
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+function donorRow(d,exact){
+ const i=donors.indexOf(d);
+ return `<div class="d"><div class="av">${d.g}</div><div class="i"><b>${esc(d.n)}${!exact?'<span class="tag">Compatible</span>':''}</b>
+ <span class="m">${esc(d.c)} | Healthy donor | Last donated ${months(d.last)}</span></div>
+ <button data-contact="${i}">Contact</button></div>`}
+
+function search(g,city,compat){
+ const ok=compat?COMP[g]:[g];
+ const all=donors.filter(d=>ok.includes(d.g)&&d.c.toLowerCase().includes(city.trim().toLowerCase())&&d.avail);
+ const hidden=all.filter(d=>!eligible(d)).length;
+ const list=all.filter(eligible).sort((a,b)=>(a.g===g?0:1)-(b.g===g?0:1));
+ return {list,hidden}}
+
+const views={
+home(){return `<div class="hero"><div><h1>${tr("Every drop finds its person.","ஒவ்வொரு துளியும் தன் மனிதரைத் தேடிச் சேரும்.")}</h1>
+<p class="sub" style="max-width:32em">RedSoul connects hospitals and families with healthy blood donors nearby, and rewards donors for showing up.</p>
+<div class="row" style="flex-wrap:nowrap"><a class="btn" href="#donor" style="text-decoration:none;flex:none">Become a donor</a>
+<a class="btn" href="#urgent" style="text-decoration:none;flex:none;background:var(--card);color:var(--ink);border:1px solid var(--line)">Post urgent request</a></div></div>
+<div class="card" style="margin:0"><h2 style="margin:0 0 14px;font-size:26px">Find blood near you</h2>
+<div class="row"><div style="flex:0 0 90px"><label class="m" for="hg">Group</label><select id="hg">${opts("O+")}</select></div>
+<div><label class="m" for="hc">City</label><input id="hc" value="Chennai"></div></div>
+<button style="width:100%;margin-top:14px" id="hgo">Search donors</button></div></div>
+<div class="steps"><div><h2>1. Search</h2><p class="m">Pick the blood group and city. Compatible groups are included.</p></div>
+<div><h2>2. Connect</h2><p class="m">Verified requesters contact the donor.</p></div>
+<div><h2>3. Donate</h2><p class="m">Donation is confirmed and points are added.</p></div></div>`},
+
+find(){return `<h1>${tr("Find blood donors","இரத்த கொடையாளரைத் தேடுங்கள்")}</h1><p class="sub">Search by blood group and city. Only verified requesters see contact details.</p>
+<div class="card"><div class="row"><div style="flex:0 0 110px"><label for="fg">Blood group</label><select id="fg">${opts(sess.g)}</select></div>
+<div style="flex:2 1 200px"><label for="fc">City</label><input id="fc" value="${esc(sess.c)}"></div>
+<button id="fgo" style="flex:none">Search donors</button></div>
+<label class="chk"><input type="checkbox" id="fcomp" ${sess.comp?"checked":""}> Include compatible groups <span class="m" id="fhint"></span></label>
+<div id="res"></div></div>`},
+
+urgent(){return `<h1>Urgent requests</h1><p class="sub">Post a need and nearby eligible donors are alerted straight away.</p>
+<div class="two"><div class="card"><h2 style="margin:0 0 14px;font-size:24px">Need blood now</h2>
+<label for="ug">Blood group</label><select id="ug">${opts("O+")}</select>
+<label for="uh" style="margin-top:12px">Hospital</label><input id="uh" placeholder="e.g. Apollo Hospital">
+<label for="uc" style="margin-top:12px">City</label><input id="uc" value="Chennai">
+<div class="row" style="margin-top:12px"><div><label for="uu">Units</label><input id="uu" type="number" min="1" max="10" value="1"></div>
+<div><label for="ut">Needed by</label><select id="ut"><option>Within 2 hours</option><option>Today</option><option>Tomorrow</option></select></div></div>
+<p class="m" id="uerr" role="alert" style="color:var(--red)"></p>
+<button id="ugo" style="width:100%;margin-top:6px">Alert nearby donors</button></div>
+<div id="ulist"></div></div>`},
+
+donor(){return `<div style="max-width:800px;margin:0 auto"><h1>Become a donor</h1><p class="sub">One minute to register. You can donate again after 3 months.</p>
+<div class="card"><label for="dn">Full name</label><input id="dn" placeholder="Asha Kumar">
+<div class="row" style="margin-top:14px"><div><label for="dg">Blood group</label><select id="dg">${opts("O+")}</select></div>
+<div><label for="dc">City</label><input id="dc" placeholder="Chennai"></div></div>
+<label for="dp" style="margin-top:14px">Phone number</label><input id="dp" inputmode="tel" placeholder="Shown only to verified requesters">
+<label for="dl" style="margin-top:14px">Last donation date <span class="m" style="font-weight:400">(leave empty if first time)</span></label>
+<input id="dl" type="date" max="${new Date().toISOString().slice(0,10)}">
+<p id="delig" class="m" aria-live="polite" style="margin:8px 0 0">Pick a date to see when you can donate.</p>
+<label class="chk"><input type="checkbox" id="dh"> I am healthy and eligible to donate</label>
+<label class="chk"><input type="checkbox" id="dcons"> Share my number only after I approve a verified request</label>
+<p class="m" id="derr" role="alert" style="color:var(--red)"></p>
+<button id="dgo" style="width:100%">Register as donor</button></div></div>`},
+
+compat(){return `<h1>${tr("Who can give to whom","யார் யாருக்குக் கொடுக்கலாம்")}</h1><p class="sub">Pick a blood group to see who it can donate to and receive from.</p>
+<div class="card"><label for="cg">Blood group</label><select id="cg" style="max-width:140px">${opts(sess.cg)}</select><div id="cres" aria-live="polite" style="margin-top:18px"></div></div>
+<div class="card"><b>All groups</b><div style="overflow-x:auto;margin-top:10px"><table style="border-collapse:collapse;min-width:360px;width:100%;font-size:14px"><tr><th class="m" style="text-align:left;padding:6px">Patient</th><th class="m" style="text-align:left;padding:6px">Can receive from</th></tr>${G.map(g=>`<tr style="border-top:1px solid var(--line)"><td style="padding:6px"><b>${g}</b></td><td style="padding:6px">${COMP[g].join(", ")}</td></tr>`).join("")}</table></div></div>`},
+rewards(){const R=[["20% off at pharmacy",150],["Grocery voucher",200],["Free health check-up",300]];
+return `<h1>Your rewards</h1><p class="sub">Earn points for every confirmed donation and redeem them for partner coupons.</p>
+<div class="two"><div class="pts"><div>Your points</div><div class="n" id="pn">${points}</div><div style="margin-top:12px">${dons} donations confirmed</div></div>
+<div>${R.map((r,i)=>`<div class="card rw"><div><b>${r[0]}</b><div class="m">${r[1]} points</div><div class="m" id="cp${i}"></div></div>
+${points>=r[1]?`<button data-redeem="${i}" data-cost="${r[1]}">Redeem</button>`:`<button class="alt" disabled>Need more points</button>`}</div>`).join("")}
+<div class="card"><b>Your impact</b><p class="m" style="margin:4px 0 10px">One donation can help up to 3 patients, so you have helped up to <b>${dons*3}</b>.</p>
+<div>${dons>=1?'<span class="tag">First donation</span>':''}${dons>=3?'<span class="tag">3 donations</span>':'<span class="tag" style="opacity:.5">3 donations: '+(3-dons)+' to go</span>'}${dons>=5?'<span class="tag">Lifesaver</span>':''}</div>
+<button class="alt" data-logdon style="margin-top:14px">Demo: confirm a donation (+100 points)</button></div></div></div>`}
+};
+const sess={g:"O+",c:"Chennai",comp:true,cg:"O-"};
+
+function render(){
+ const r=(location.hash||"#home").slice(1); const v=views[r]?r:"home";
+ $("#app").innerHTML=views[v]();
+ $("#nav").innerHTML=NAV.map(n=>`<a href="#${n[0]}" class="${n[0]===v?"on":n[0]==="urgent"?"urg":""}">${tr(n[1],n[2])}</a>`).join("")+`<button class="alt" id="lang" style="padding:2px 10px;font-size:13px" aria-label="Switch language">${ta?"English":"தமிழ்"}</button>`;
+ if(v==="compat")drawCompat();
+ if(v==="find")doSearch(); if(v==="urgent")drawReqs();
+}
+function doSearch(){
+ const g=$("#fg").value,c=$("#fc").value,comp=$("#fcomp").checked;
+ Object.assign(sess,{g,c,comp});
+ const {list,hidden}=search(g,c,comp);
+ $("#fhint").textContent=comp?"(also shows "+COMP[g].filter(x=>x!==g).join(", ")+")":"";
+ $("#res").innerHTML=`<div class="m" style="border-bottom:1px solid var(--line);padding-bottom:8px">${list.length} donor${list.length===1?"":"s"} found${hidden?` | ${hidden} hidden (donated in the last 3 months)`:""}</div>`
+ +(list.map(d=>donorRow(d,d.g===g)).join("")||`<p class="m">No eligible donors yet. Try another city, or <a href="#urgent" style="color:var(--red)">post an urgent request</a>.</p>`);
+}
+function drawReqs(){
+ $("#ulist").innerHTML=reqs.map((q,i)=>{const n=donors.filter(d=>COMP[q.g].includes(d.g)&&d.c.toLowerCase()===q.c.toLowerCase()&&d.avail&&eligible(d)).length;
+ return `<div class="card"><div class="rw"><div><b style="font-size:18px">${q.g} needed at ${esc(q.h)}</b><div class="m">${esc(q.c)} | ${q.u} unit${q.u>1?"s":""} | ${esc(q.t)}</div>
+ <div class="m ok">${n} eligible donor${n===1?"":"s"} alerted${q.helped?` | ${q.helped} said "I can help"`:""}</div></div>
+ <button class="alt" data-help="${i}">I can help</button></div></div>`}).join("")||'<p class="m">No open requests.</p>';
+}
+function drawCompat(){const g=$("#cg").value;sess.cg=g;
+ const to=G.filter(x=>COMP[x].includes(g));
+ const chips=a=>a.map(x=>`<span class="tag" style="font-size:15px;margin:0 6px 6px 0">${x}</span>`).join("");
+ $("#cres").innerHTML=`<p class="m" style="margin:0 0 6px">${g} can donate to</p>${chips(to)}<p class="m" style="margin:12px 0 6px">${g} can receive from</p>${chips(COMP[g])}`}
+function closeModal(){$("#vm").classList.remove("on")}
+function openVerify(i){
+ contact=donors[i]; $("#vn").textContent=contact.n;
+ ["v1","v2","v3"].forEach((x,k)=>$("#"+x).hidden=k!==(verified?2:0));
+ if(verified)$("#vph").textContent=contact.ph;
+ $("#verr").textContent=""; $("#vm").classList.add("on");
+ setTimeout(()=>$(verified?"#vm .alt:last-child":"#hid").focus(),0);
+}
+document.addEventListener("click",e=>{
+ const t=e.target;
+ if(t.id==="hgo"){sess.g=$("#hg").value;sess.c=$("#hc").value;location.hash="#find"}
+ if(t.id==="fgo")doSearch();
+ if(t.id==="lang"){ta=!ta;render()}
+ if(t.hasAttribute("data-logdon")){points+=100;dons++;render()}
+ if(t.dataset.contact!==undefined)openVerify(+t.dataset.contact);
+ if(t.hasAttribute("data-close")||t.id==="vm")closeModal();
+ if(t.id==="sendotp"){if(!$("#hid").value.trim()||$("#ph").value.replace(/\D/g,"").length<10){alert("Enter a requester ID and a 10-digit mobile number.");return}
+  $("#v1").hidden=true;$("#v2").hidden=false;$("#otp").focus()}
+ if(t.id==="chkotp"){if($("#otp").value==="1234"){verified=true;$("#v2").hidden=true;$("#v3").hidden=false;$("#vph").textContent=contact.ph}else $("#verr").textContent="That OTP is not correct. Try 1234 in this demo."}
+ if(t.id==="ugo"){const h=$("#uh").value.trim(),c=$("#uc").value.trim();
+  if(!h||!c){$("#uerr").textContent="Add the hospital and city so donors know where to go.";return}
+  reqs.unshift({g:$("#ug").value,h,c,u:+$("#uu").value||1,t:$("#ut").value,helped:0});drawReqs();$("#uerr").textContent="";$("#uh").value=""}
+ if(t.dataset.help!==undefined){reqs[+t.dataset.help].helped++;t.disabled=true;t.textContent="Thanks, sent";drawReqs()}
+ if(t.id==="dgo"){const n=$("#dn").value.trim(),c=$("#dc").value.trim(),p=$("#dp").value.replace(/\D/g,"");
+  const l=$("#dl").value?new Date($("#dl").value):ago(GAP+1);
+  if(!n||!c||p.length<10){$("#derr").textContent="Add your name, city and a 10-digit phone number.";return}
+  if(!$("#dh").checked||!$("#dcons").checked){$("#derr").textContent="Please tick both confirmations to register.";return}
+  donors.push({n:n.split(" ")[0],g:$("#dg").value,c,last:l,ph:$("#dp").value,avail:true});
+  const e=eligible(donors.at(-1));
+  $("#app").innerHTML=`<h1>Thank you, ${esc(n.split(" ")[0])}.</h1><p class="sub">${e?"You are now visible to people searching for "+$("#dg").value+" in "+esc(c)+".":"You will appear in searches from <b>"+fmt(eligOn(donors.at(-1)))+"</b>, when you are eligible again."}</p><a class="btn" href="#find" style="text-decoration:none">Find blood</a>`}
+ if(t.dataset.redeem!==undefined){const c=+t.dataset.cost;points-=c;const i=t.dataset.redeem;
+  const code="RS-"+Math.random().toString(36).slice(2,8).toUpperCase();
+  render();$("#cp"+i).innerHTML=`Coupon code: <span class="code">${code}</span>`}
+});
+document.addEventListener("input",e=>{
+ if(e.target.id==="dl"){const v=e.target.value,el=$("#delig");if(!v){el.textContent="Pick a date to see when you can donate.";return}
+  const d={last:new Date(v)},o=eligOn(d);
+  el.innerHTML=o<=new Date()?'<span class="ok">Eligible now.</span> It has been over 3 months since your last donation.':`<span class="wn">Eligible again on ${fmt(o)}</span> (${Math.ceil((o-Date.now())/DAY)} days to go). You will be listed from that day.`}
+});
+document.addEventListener("change",e=>{if(e.target.id==="fcomp"||e.target.id==="fg")doSearch();if(e.target.id==="cg")drawCompat()});
+addEventListener("hashchange",render);addEventListener("keydown",e=>{if(e.key==="Escape")closeModal()});
+render();
+</script></body></html>
